@@ -7,6 +7,11 @@
   line-height: 10vmin;
   margin: 0 auto;
   text-align: center;
+  cursor: pointer;
+}
+
+.beats {
+  padding-top: 30vh;
 }
 
 .selected {

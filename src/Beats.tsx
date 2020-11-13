@@ -67,11 +67,13 @@ function Beats(props: IProps) {
   React.useEffect(() => {
     setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision));
     setStrumCount(Math.ceil(beats.length / 2))
-  }, [props]);
+  }, [props, beats.length]);
 
   const onBeatClick = (index: number) => {
     return () => {
-      setBeatSelection(beatSelection.map((b, idx) => { return index === idx ? !b : b }))
+      const newSelection = beatSelection.map((b, idx) => { return index === idx ? !b : b });
+      setBeatSelection(newSelection);
+      setStrumCount(newSelection.filter((s) => s).length);
     }
   }
 
@@ -87,6 +89,20 @@ function Beats(props: IProps) {
     setStrumCount(parseInt(event.target.value));
   }
 
+  // Fake normal-ish distribution
+  const gaussianRand = () => {
+    let rand = 0;
+    const factor = 2;
+    for (var i = 0; i < factor; i += 1) {
+      rand += Math.random();
+    }
+
+    return rand / factor;
+  }
+
+  const randomizeStrumCount = () => {
+    setStrumCount(Math.floor(1 + gaussianRand() * beats.length));
+  }
 
   return (
     <div>
@@ -94,6 +110,7 @@ function Beats(props: IProps) {
         <input type="range" min="1" max={beats.length} value={strumCount} name="strum-count" onChange={handleStrumCountChange} />
       </label>
       <br />
+      <button onClick={randomizeStrumCount}>Randomize strum count</button>
       <button onClick={randomizeStrums}>Randomize strums</button>
       <div className="beats">
         <div>
