@@ -13,7 +13,7 @@ enum Subdivisions {
   Sixteenth
 }
 
-function initSelectedBeats(beatCount: number, subdivision: Subdivisions) {
+const initSelectedBeats = (beatCount: number, subdivision: Subdivisions) => {
   const initialValues: boolean[] = [];
 
   for (let i = 1; i <= beatCount; i++) {
@@ -32,7 +32,7 @@ function initSelectedBeats(beatCount: number, subdivision: Subdivisions) {
   return initialValues;
 }
 
-function shuffleArray(a: number[]) {
+const shuffleArray = (a: number[]) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
@@ -40,11 +40,11 @@ function shuffleArray(a: number[]) {
   return a;
 }
 
-function Beats(props: IProps) {
+const initBeats = (beatCount: number, subdivision: Subdivisions) => {
   const beats = [];
-  for (let i = 1; i <= props.beatCount; i++) {
+  for (let i = 1; i <= beatCount; i++) {
     beats.push(i.toString());
-    switch (props.subdivision) {
+    switch (subdivision) {
       case Subdivisions.Eighth:
         beats.push("+")
         break;
@@ -55,9 +55,18 @@ function Beats(props: IProps) {
         break;
     }
   }
+  return beats
+}
+
+function Beats(props: IProps) {
+  const beats = initBeats(props.beatCount, props.subdivision);
   const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(props.beatCount, props.subdivision));
+  const [strumCount, setStrumCount] = React.useState(Math.ceil(beats.length / 2))
+
+  // Reset strummed beats and number of strums when subdivision or beat count changes
   React.useEffect(() => {
     setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision));
+    setStrumCount(Math.ceil(beats.length / 2))
   }, [props]);
 
   const onBeatClick = (index: number) => {
@@ -67,21 +76,31 @@ function Beats(props: IProps) {
   }
 
   const randomizeStrums = () => {
-    console.log(beatSelection.map((_, idx) => { return idx }));
-    const strumIndices = shuffleArray(beatSelection.map((_, idx) => { return idx })).slice(0, 3);
+    const strumIndices = shuffleArray(beatSelection.map((_, idx) => { return idx })).slice(0, strumCount);
     let newSelection = beatSelection.map(() => false);
-    console.log(strumIndices);
     strumIndices.forEach((idx) => { newSelection[idx] = true });
 
     setBeatSelection(newSelection);
   }
+
+  const handleStrumCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStrumCount(parseInt(event.target.value));
+  }
+
+
   return (
-    <div className="beats">
+    <div>
+      <label>Number of strums: {strumCount}
+        <input type="range" min="1" max={beats.length} value={strumCount} name="strum-count" onChange={handleStrumCountChange} />
+      </label>
+      <br />
       <button onClick={randomizeStrums}>Randomize strums</button>
-      <div>
-        {beats.map((b, idx) => (
-          <Beat selected={beatSelection[idx]} value={b} key={idx} onClick={onBeatClick(idx)} />
-        ))}
+      <div className="beats">
+        <div>
+          {beats.map((b, idx) => (
+            <Beat selected={beatSelection[idx]} value={b} key={idx} onClick={onBeatClick(idx)} />
+          ))}
+        </div>
       </div>
     </div>
   );
