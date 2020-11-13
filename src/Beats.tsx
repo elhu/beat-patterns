@@ -93,7 +93,7 @@ function Beats(props: IProps) {
   const gaussianRand = () => {
     let rand = 0;
     const factor = 2;
-    for (var i = 0; i < factor; i += 1) {
+    for (var i = 0; i < factor; i++) {
       rand += Math.random();
     }
 
