@@ -1,5 +1,6 @@
-import React from 'react';
-import Beat from './Beat';
+import React from "react";
+import Beat from "./Beat";
+import Button from "./Button";
 
 interface IProps {
   beatCount: number,
@@ -111,8 +112,8 @@ function Beats(props: IProps) {
         </label>
       </div>
       <div className="flex justify-center items-center">
-        <button className="m-1 py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 hover:bg-blue-700" onClick={randomizeStrumCount}>Randomize strum count</button>
-        <button className="m-1 py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 hover:bg-blue-700" onClick={randomizeStrums}>Randomize strums</button>
+        <Button color="blue" onClick={randomizeStrumCount}>Randomize strum count</Button>
+        <Button color="blue" onClick={randomizeStrums}>Randomize strums</Button>
       </div>
       <div className="beats pt-10">
         <div className="flex justify-center items-center">
