@@ -1,5 +1,4 @@
 import React from 'react';
-import "./Beat.css";
 
 interface IProps {
   selected?: boolean,
@@ -9,7 +8,7 @@ interface IProps {
 
 function Beat(props: IProps) {
   return (
-    <div className={`beat ${props.selected ? "selected" : ""}`} onClick={props.onClick} >
+    <div className={`beat p-2 text-5xl ${props.selected ? "selected" : ""}`} onClick={props.onClick} >
       {props.value}
     </div>
   );

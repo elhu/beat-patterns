@@ -1,6 +1,5 @@
 import React from 'react';
 import Beat from './Beat';
-import "./Beats.css";
 
 interface IProps {
   beatCount: number,
@@ -106,14 +105,17 @@ function Beats(props: IProps) {
 
   return (
     <div>
-      <label>Number of strums: {strumCount}
-        <input type="range" min="1" max={beats.length} value={strumCount} name="strum-count" onChange={handleStrumCountChange} />
-      </label>
-      <br />
-      <button onClick={randomizeStrumCount}>Randomize strum count</button>
-      <button onClick={randomizeStrums}>Randomize strums</button>
-      <div className="beats">
-        <div>
+      <div className="flex justify-center items-center">
+        <label>Number of strums: {strumCount}
+          <input type="range" min="1" max={beats.length} value={strumCount} name="strum-count" onChange={handleStrumCountChange} />
+        </label>
+      </div>
+      <div className="flex justify-center items-center">
+        <button className="m-1 py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 hover:bg-blue-700" onClick={randomizeStrumCount}>Randomize strum count</button>
+        <button className="m-1 py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 hover:bg-blue-700" onClick={randomizeStrums}>Randomize strums</button>
+      </div>
+      <div className="beats pt-10">
+        <div className="flex justify-center items-center">
           {beats.map((b, idx) => (
             <Beat selected={beatSelection[idx]} value={b} key={idx} onClick={onBeatClick(idx)} />
           ))}
