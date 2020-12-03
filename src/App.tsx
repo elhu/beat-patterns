@@ -20,7 +20,7 @@ function App() {
     <div className="container h-full">
       <div className="flex justify-center items-center">
         <Button onClick={switchSignature(4)}>4:4</Button>
-        <Button onClick={switchSignature(4)}>6:8</Button>
+        <Button onClick={switchSignature(6)}>6:8</Button>
       </div>
       <div className="flex justify-center items-center">
         <Button onClick={switchSubdivision(Subdivisions.Quarter)}>
