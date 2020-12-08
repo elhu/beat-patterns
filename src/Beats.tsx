@@ -5,6 +5,7 @@ import Button from "./Button";
 interface IProps {
   beatCount: number,
   subdivision: Subdivisions,
+  defaultSelection: number[],
 }
 
 enum Subdivisions {
@@ -13,7 +14,7 @@ enum Subdivisions {
   Sixteenth
 }
 
-const initSelectedBeats = (beatCount: number, subdivision: Subdivisions) => {
+const initSelectedBeats = (beatCount: number, subdivision: Subdivisions, initialBeats: number[] = []) => {
   const initialValues: boolean[] = [];
 
   for (let i = 1; i <= beatCount; i++) {
@@ -28,6 +29,10 @@ const initSelectedBeats = (beatCount: number, subdivision: Subdivisions) => {
       default:
         break;
     }
+  }
+  console.log(initialBeats);
+  for (let i = 0; i < initialBeats.length; i++) {
+    initialValues[initialBeats[i]] = true;
   }
   return initialValues;
 }
@@ -59,15 +64,17 @@ const initBeats = (beatCount: number, subdivision: Subdivisions) => {
 }
 
 function Beats(props: IProps) {
+  console.log(props);
   const beats = initBeats(props.beatCount, props.subdivision);
-  const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(props.beatCount, props.subdivision));
+  const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
   const [strumCount, setStrumCount] = React.useState(Math.ceil(beats.length / 2))
 
   // Reset strummed beats and number of strums when subdivision or beat count changes
   React.useEffect(() => {
-    setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision));
+    console.log("WTF");
+    setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
     setStrumCount(Math.ceil(beats.length / 2))
-  }, [props, beats.length]);
+  }, [props.beatCount, props.subdivision, props.defaultSelection, beats.length]);
 
   const onBeatClick = (index: number) => {
     return () => {
@@ -104,6 +111,7 @@ function Beats(props: IProps) {
     setStrumCount(Math.floor(1 + gaussianRand() * beats.length));
   }
 
+  console.log(beatSelection);
   return (
     <div>
       <div className="flex justify-center items-center">
