@@ -6,7 +6,7 @@ interface IProps {
   beatCount: number,
   subdivision: Subdivisions,
   beatSelection: boolean[],
-  setBeatSelection: any,
+  setBeatSelection: React.Dispatch<React.SetStateAction<boolean[]>>,
   defaultSelection: number[],
 }
 
