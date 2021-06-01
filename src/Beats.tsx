@@ -65,15 +65,22 @@ const initBeats = (beatCount: number, subdivision: Subdivisions) => {
 }
 
 function Beats(props: IProps) {
+  const didMountRef = React.useRef(false);
   const beats = initBeats(props.beatCount, props.subdivision);
-  const [strumCount, setStrumCount] = React.useState(Math.ceil(beats.length / 2))
+  const selectedBeatsLength = props.beatSelection.filter((e) => e).length;
+  const initialStrumCount = selectedBeatsLength !== 0 ? selectedBeatsLength : Math.ceil(beats.length / 2);
+  const [strumCount, setStrumCount] = React.useState(initialStrumCount);
 
   const { beatCount, subdivision, defaultSelection, setBeatSelection } = props;
 
   // Reset strummed beats and number of strums when subdivision or beat count changes
   React.useEffect(() => {
-    setBeatSelection(initSelectedBeats(beatCount, subdivision, defaultSelection));
-    setStrumCount(Math.ceil(beats.length / 2))
+    if (didMountRef.current) {
+      setBeatSelection(initSelectedBeats(beatCount, subdivision, defaultSelection));
+      setStrumCount(Math.ceil(beats.length / 2));
+    } else {
+      didMountRef.current = true;
+    }
   }, [beatCount, subdivision, defaultSelection, setBeatSelection, beats.length]);
 
   const onBeatClick = (index: number) => {
