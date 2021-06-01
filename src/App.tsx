@@ -1,5 +1,5 @@
 import React from "react";
-import Beats, { Subdivisions } from "./Beats";
+import Beats, { Subdivisions, initSelectedBeats } from "./Beats";
 import Button from "./Button";
 
 function App() {
@@ -16,6 +16,8 @@ function App() {
     };
   };
   const [defaultSelection, setDefaultSelection] = React.useState([] as number[])
+  const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(beatCount, subdivision, defaultSelection));
+
   const oldFaithFul = () => {
     setBeats(4)
     setSubdivision(Subdivisions.Eighth)
@@ -46,7 +48,7 @@ function App() {
             Sixteenth notes
           </Button>
         </div>
-          <Beats beatCount={beatCount} subdivision={subdivision} defaultSelection={defaultSelection} />
+        <Beats beatCount={beatCount} beatSelection={beatSelection} setBeatSelection={setBeatSelection} subdivision={subdivision} defaultSelection={defaultSelection} />
       </div>
       <div className="w-1/3 h-full">
         <Button onClick={oldFaithFul}>Old faithful</Button>
