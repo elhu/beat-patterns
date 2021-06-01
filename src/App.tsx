@@ -47,6 +47,12 @@ function App() {
     setDefaultSelection([0, 2, 3, 5, 6])
   }
 
+  const hotelCalifornia = () => {
+    setBeats(4)
+    setSubdivision(Subdivisions.Sixteenth)
+    setDefaultSelection([0, 3, 4, 7, 8, 9, 10, 12, 14, 15])
+  }
+
   const sixEightBasic = () => {
     setBeats(6)
     setSubdivision(Subdivisions.Eighth)
@@ -75,6 +81,7 @@ function App() {
       </div>
       <div className="w-1/3 h-full">
         <Button onClick={oldFaithFul}>Old faithful</Button>
+        <Button onClick={hotelCalifornia}>Hotel California</Button>
         <Button onClick={sixEightBasic}>6:8 basic</Button>
       </div>
     </div>
