@@ -5,6 +5,8 @@ import Button from "./Button";
 interface IProps {
   beatCount: number,
   subdivision: Subdivisions,
+  beatSelection: boolean[],
+  setBeatSelection: React.Dispatch<React.SetStateAction<boolean[]>>,
   defaultSelection: number[],
 }
 
@@ -63,27 +65,36 @@ const initBeats = (beatCount: number, subdivision: Subdivisions) => {
 }
 
 function Beats(props: IProps) {
+  const didMountRef = React.useRef(false);
   const beats = initBeats(props.beatCount, props.subdivision);
-  const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
-  const [strumCount, setStrumCount] = React.useState(Math.ceil(beats.length / 2))
+  const selectedBeatsLength = props.beatSelection.filter((e) => e).length;
+  const initialStrumCount = selectedBeatsLength !== 0 ? selectedBeatsLength : Math.ceil(beats.length / 2);
+  const [strumCount, setStrumCount] = React.useState(initialStrumCount);
+
+  const { beatCount, subdivision, defaultSelection, setBeatSelection } = props;
 
   // Reset strummed beats and number of strums when subdivision or beat count changes
   React.useEffect(() => {
-    setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
-    setStrumCount(Math.ceil(beats.length / 2))
-  }, [props.beatCount, props.subdivision, props.defaultSelection, beats.length]);
+    if (didMountRef.current) {
+      setBeatSelection(initSelectedBeats(beatCount, subdivision, defaultSelection));
+      setStrumCount(Math.ceil(beats.length / 2));
+    } else {
+      didMountRef.current = true;
+    }
+  }, [beatCount, subdivision, defaultSelection, setBeatSelection, beats.length]);
 
   const onBeatClick = (index: number) => {
     return () => {
-      const newSelection = beatSelection.map((b, idx) => { return index === idx ? !b : b });
+      const newSelection = props.beatSelection.map((b, idx) => { return index === idx ? !b : b });
       setBeatSelection(newSelection);
+      // ToDo: change this next line
       setStrumCount(newSelection.filter((s) => s).length);
     }
   }
 
   const randomizeStrums = () => {
-    const strumIndices = shuffleArray(beatSelection.map((_, idx) => { return idx })).slice(0, strumCount);
-    let newSelection = beatSelection.map(() => false);
+    const strumIndices = shuffleArray(props.beatSelection.map((_, idx) => { return idx })).slice(0, strumCount);
+    let newSelection = props.beatSelection.map(() => false);
     strumIndices.forEach((idx) => { newSelection[idx] = true });
 
     setBeatSelection(newSelection);
@@ -122,7 +133,7 @@ function Beats(props: IProps) {
       <div className="beats pt-10">
         <div className="flex justify-center items-center">
           {beats.map((b, idx) => (
-            <Beat selected={beatSelection[idx]} value={b} key={idx} onClick={onBeatClick(idx)} />
+            <Beat selected={props.beatSelection[idx]} value={b} key={idx} onClick={onBeatClick(idx)} />
           ))}
         </div>
       </div>
@@ -130,5 +141,5 @@ function Beats(props: IProps) {
   );
 }
 
-export { Subdivisions };
+export { Subdivisions, initSelectedBeats };
 export default Beats;

@@ -1,21 +1,46 @@
 import React from "react";
-import Beats, { Subdivisions } from "./Beats";
+import Beats, { Subdivisions, initSelectedBeats } from "./Beats";
 import Button from "./Button";
 
 function App() {
-  const [beatCount, setBeats] = React.useState(4);
+  const params = new URLSearchParams(window.location.search);
+
+  const initialBeatCount = params.get("beatCount") ? Number(params.get("beatCount")) : 4;
+  const [beatCount, setBeats] = React.useState(initialBeatCount);
   const switchSignature = (newSignature: number) => {
     return () => {
       setBeats(newSignature);
     };
   };
-  const [subdivision, setSubdivision] = React.useState(Subdivisions.Eighth);
+
+  const initialSubdivision = params.get("subdivision") ? Number(params.get("subdivision")) : Subdivisions.Eighth;
+  const [subdivision, setSubdivision] = React.useState(initialSubdivision);
   const switchSubdivision = (newSub: Subdivisions) => {
     return () => {
       setSubdivision(newSub);
     };
   };
+
   const [defaultSelection, setDefaultSelection] = React.useState([] as number[])
+  const beatSelectionParam = params.get("beatSelection") ?? ""
+  let initialBeatSelection = [] as boolean[];
+  if (params.get("beatSelection") !== "") {
+    initialBeatSelection = beatSelectionParam.split("").map(e => e === "1")
+  } else {
+    initialBeatSelection = initSelectedBeats(initialBeatCount, subdivision, defaultSelection);
+  }
+  console.log(initialBeatSelection);
+  const [beatSelection, setBeatSelection] = React.useState(initialBeatSelection);
+
+  React.useEffect(() => {
+    const state = {
+      subdivision: `${subdivision}`,
+      beatSelection: beatSelection.map((e) => e ? "1" : "0").join(""),
+      beatCount: `${beatCount}`,
+    }
+    window.history.replaceState(state, '', `/?${new URLSearchParams(state).toString()}`);
+  }, [subdivision, beatSelection, beatCount]);
+
   const oldFaithFul = () => {
     setBeats(4)
     setSubdivision(Subdivisions.Eighth)
@@ -46,7 +71,7 @@ function App() {
             Sixteenth notes
           </Button>
         </div>
-          <Beats beatCount={beatCount} subdivision={subdivision} defaultSelection={defaultSelection} />
+        <Beats beatCount={beatCount} beatSelection={beatSelection} setBeatSelection={setBeatSelection} subdivision={subdivision} defaultSelection={defaultSelection} />
       </div>
       <div className="w-1/3 h-full">
         <Button onClick={oldFaithFul}>Old faithful</Button>
