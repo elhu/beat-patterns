@@ -30,7 +30,6 @@ const initSelectedBeats = (beatCount: number, subdivision: Subdivisions, initial
         break;
     }
   }
-  console.log(initialBeats);
   for (let i = 0; i < initialBeats.length; i++) {
     initialValues[initialBeats[i]] = true;
   }
@@ -64,14 +63,12 @@ const initBeats = (beatCount: number, subdivision: Subdivisions) => {
 }
 
 function Beats(props: IProps) {
-  console.log(props);
   const beats = initBeats(props.beatCount, props.subdivision);
   const [beatSelection, setBeatSelection] = React.useState(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
   const [strumCount, setStrumCount] = React.useState(Math.ceil(beats.length / 2))
 
   // Reset strummed beats and number of strums when subdivision or beat count changes
   React.useEffect(() => {
-    console.log("WTF");
     setBeatSelection(initSelectedBeats(props.beatCount, props.subdivision, props.defaultSelection));
     setStrumCount(Math.ceil(beats.length / 2))
   }, [props.beatCount, props.subdivision, props.defaultSelection, beats.length]);
@@ -111,7 +108,6 @@ function Beats(props: IProps) {
     setStrumCount(Math.floor(1 + gaussianRand() * beats.length));
   }
 
-  console.log(beatSelection);
   return (
     <div>
       <div className="flex justify-center items-center">
