@@ -24,14 +24,12 @@ function App() {
   const [defaultSelection, setDefaultSelection] = React.useState([] as number[])
   const beatSelectionParam = params.get("beatSelection") ?? ""
   let initialBeatSelection = [] as boolean[];
-  if (params.get("beatSelection") !== "") {
+  if (params.get("beatSelection") && params.get("beatSelection") !== "") {
     initialBeatSelection = beatSelectionParam.split("").map(e => e === "1")
   } else {
     initialBeatSelection = initSelectedBeats(initialBeatCount, subdivision, defaultSelection);
   }
-  console.log(initialBeatSelection);
   const [beatSelection, setBeatSelection] = React.useState(initialBeatSelection);
-
   React.useEffect(() => {
     const state = {
       subdivision: `${subdivision}`,
